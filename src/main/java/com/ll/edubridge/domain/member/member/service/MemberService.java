@@ -1,5 +1,6 @@
 package com.ll.edubridge.domain.member.member.service;
 
+import com.ll.edubridge.domain.course.courseEnroll.service.CourseEnrollService;
 import com.ll.edubridge.domain.member.member.dto.NickNameDto;
 import com.ll.edubridge.domain.member.member.entity.Member;
 import com.ll.edubridge.domain.member.member.repository.MemberRepository;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +38,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
     private final PointService pointService;
+    private final CourseEnrollService courseEnrollService;
 
     private final Rq rq;
 
@@ -61,9 +64,9 @@ public class MemberService {
                 .uuid(generateRandomString())
                 .build();
 
-        pointService.addPoint(PointType.Welcome, member); // 포인트 내역 추가
-
         memberRepository.save(member);
+
+        pointService.addPoint(PointType.Welcome, member); // 포인트 내역 추가
 
         return RsData.of("200", "%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername()), member);
     }
@@ -240,7 +243,6 @@ public class MemberService {
             member.setEnrollCount(0);
         }
         memberRepository.saveAll(allMembers);
-        // TODO :: 필요하면 출석체크로 로직을 바꿀 것
     }
 
     private List<Member> getAllMembers() {
@@ -270,5 +272,24 @@ public class MemberService {
         }else{
             return false;
         }
+    }
+
+    @Transactional
+    public void dropMember() {
+        Member member = rq.getMember();
+
+        member.setNickname("탈퇴한 회원");
+        member.setRefreshToken(member.getUsername() + "_deleted_" + LocalDateTime.now()); // unique
+        member.setUsername(member.getUsername() + "_deleted_" + LocalDateTime.now()); // unique
+        member.setPassword("");
+        member.setUuid("");
+        member.setProfileImgUrl("");
+        member.setPoint(0);
+        member.setEnrollCount(0);
+
+        courseEnrollService.delete(member);
+
+        memberRepository.save(member);
+        rq.setLogout();
     }
 }

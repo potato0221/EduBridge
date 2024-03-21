@@ -32,7 +32,7 @@
     });
 
     initialData = data!.data;
-    if (rq.member.id !== initialData.writer_id && isLogin) {
+    if (rq.member.id !== initialData.writer.id && isLogin) {
       rq.msgError(' 권한이 없는 유저입니다');
       rq.goTo('/');
     }
@@ -40,8 +40,8 @@
       rq.msgWarning('로그인 후 이용 해 주세요');
       rq.goTo('/member/login');
     }
-    if (initialData.tags && initialData.tags?.split('@').length > 0) {
-      tags = initialData.tags?.split('@');
+    if (initialData.hashtags && initialData.hashtags?.split('@').length > 0) {
+      tags = initialData.hashtags?.split('@');
     }
     return { initialData };
   }
@@ -82,13 +82,11 @@
       params: { path: { id: parseInt($page.params.id) } },
       // url 설정
       body: {
-        id: parseInt($page.params.id),
         title: title,
         notice: newNoti,
         overView: newOverview,
         imgUrl: initialData?.imgUrl,
-        writer_id: initialData?.writer_id,
-        tags: tags.join('@')
+        hashtags: tags.join('@')
       }
     });
 
@@ -130,7 +128,7 @@
 {#await load()}
   <h1>loading...</h1>
 {:then { initialData }}
-  {#if rq.isAdmin() || rq.member.id === initialData.writer_id}
+  {#if rq.isAdmin() || rq.member.id === initialData.writer.id}
     <div class="">
       <div class="flex flex-col h-full px-4 py-6 md:px-6 lg:py-16 md:py-12">
         <div class="space-y-4">
