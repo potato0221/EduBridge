@@ -16,7 +16,7 @@
 
   function changeTab(tabName: string) {
     selectedTab = tabName;
-    rq.goTo(`/course`, { replaceState: true }); // URL을 변경하되, 쿼리 파라미터를 제거합니다.
+    rq.goTo(`/course?tab=${tabName}`, { replaceState: false }); // URL을 변경하되, 쿼리 파라미터를 제거합니다.
     load();
   }
 
@@ -39,6 +39,8 @@
 
   async function load() {
     if (import.meta.env.SSR) throw new Error('CSR ONLY');
+
+    selectedTab = $page.url.searchParams.get('tab') ?? 'course';
 
     const kw = $page.url.searchParams.get('kw') ?? '';
     const kwType = ($page.url.searchParams.get('kwType') ?? 'ALL') as KwTypeCourse;
@@ -138,7 +140,7 @@
             등록
           </a>
           <a
-            href="/member/mycourse"
+            href="/member/mycourse/?tab=course"
             class="ml-2 btn border border-gray-400 text-gray-800 bg-white hover:bg-gray-700 hover:border-gray-700 hover:text-white active:bg-gray-700 active:text-white active:border-gray-700 px-4 py-2 rounded transition ease-in duration-200 text-center text-base font-semibold shadow-md"
           >
             관리
@@ -177,13 +179,14 @@
               </form>
 
               <form
-                action="/course"
+                action="/course?tab=course&"
                 class="bg-base rounded flex flex-col gap-6"
                 onsubmit={() => {
             const searchFormModal = (document.querySelector('#searchFormModal') as HTMLDialogElement);
             searchFormModal.close();
           }}
               >
+                <input type="hidden" name="tab" value={selectedTab} />
                 <div class="max-w-md mx-auto bg-white p-5">
                   <div class="form-control">
                     <label for="kwType" class="label text-sm font-bold text-gray-700"
@@ -231,7 +234,7 @@
       </div>
       <div class="flex flex-col flex-1">
         <div class="px-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {#if courselist}
+          {#if courselist && courselist.length > 0}
             {#each courselist as item}
               <div
                 class="border border-gray-200 rounded-lg dark:border-gray-800 flex-col text-center pt-2"
@@ -240,6 +243,28 @@
                   <div class="flex justify-center gap-2">
                     <h2 class="text-lg font-semibold my-1 ml-2">{formatTitle(item.title)}</h2>
                   </div>
+                </a>
+                <div class="flex justify-end mr-2">
+                  <details class="dropdown dropdown-end">
+                    <summary class="flex items-center cursor-pointer">
+                      <i class="fa-regular fa-user"></i>
+                      {item.writer?.nickname}
+                    </summary>
+                    <ul class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+                      <li>
+                        <a href="/course?tab=course&kwType=NAME&kw={item.writer?.nickname}"
+                          >{item.writer?.nickname} 강좌</a
+                        >
+                      </li>
+                      <li>
+                        <a href="/course?tab=roadmap&kwType=NAME&kw={item.writer?.nickname}"
+                          >{item.writer?.nickname} 로드맵</a
+                        >
+                      </li>
+                    </ul>
+                  </details>
+                </div>
+                <a href="/course/{item.id}">
                   <div class="flex justify-center p-2 bg-black rounded-lg m-4">
                     <img src={item.imgUrl} />
                   </div>
@@ -300,6 +325,8 @@
                 </div>
               </div>
             {/each}
+          {:else}
+            <div class="p-2">등록된 강좌가 없습니다.</div>
           {/if}
         </div>
       </div>
@@ -315,7 +342,7 @@
             등록
           </a>
           <a
-            href="/member/mycourse"
+            href="/member/mycourse/?tab=roadmap"
             class="ml-2 btn border border-gray-400 text-gray-800 bg-white hover:bg-gray-700 hover:border-gray-700 hover:text-white active:bg-gray-700 active:text-white active:border-gray-700 px-4 py-2 rounded transition ease-in duration-200 text-center text-base font-semibold shadow-md"
           >
             관리
@@ -354,13 +381,15 @@
               </form>
 
               <form
-                action="/course"
+                action="/course?tab=roadmap&"
                 class="bg-base rounded flex flex-col gap-6"
                 onsubmit={() => {
             const searchFormModal = (document.querySelector('#searchFormModal') as HTMLDialogElement);
             searchFormModal.close();
           }}
               >
+                <input type="hidden" name="tab" value={selectedTab} />
+
                 <div class="max-w-md mx-auto bg-white p-5">
                   <div class="form-control">
                     <label for="kwType" class="label text-sm font-bold text-gray-700"
@@ -408,7 +437,7 @@
       </div>
       <div class="flex flex-col flex-1">
         <div class="px-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {#if roadmaplist}
+          {#if roadmaplist && roadmaplist.length > 0}
             {#each roadmaplist as item}
               <div class="border collapse bg-white">
                 <input type="checkbox" class="peer" />
@@ -431,6 +460,28 @@
                   </div>
                 </div>
                 <div class="collapse-content bg-white peer-checked:bg-white mt-1">
+                  <div class="flex justify-end">
+                    <details class="dropdown dropdown-end">
+                      <summary class="flex items-center cursor-pointer">
+                        <i class="fa-regular fa-user mr-1"></i>
+                        {item.owner?.nickname}
+                      </summary>
+                      <ul
+                        class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+                      >
+                        <li>
+                          <a href="/course?tab=course&kwType=NAME&kw={item.owner?.nickname}"
+                            >{item.owner?.nickname} 강좌</a
+                          >
+                        </li>
+                        <li>
+                          <a href="/course?tab=roadmap&kwType=NAME&kw={item.owner?.nickname}"
+                            >{item.owner?.nickname} 로드맵</a
+                          >
+                        </li>
+                      </ul>
+                    </details>
+                  </div>
                   <p class="text-lg text-gray-800 dark:text-gray-400 mx-2 font-semibold">개요</p>
                   <p class="text-sm text-gray-800 dark:text-gray-400 mx-2">
                     {removeMarkdown(item.overView)}
@@ -451,6 +502,8 @@
                 </div>
               </div>
             {/each}
+          {:else}
+            <p class="p-2">등록된 로드맵이 없습니다.</p>
           {/if}
         </div>
       </div>

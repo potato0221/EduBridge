@@ -262,7 +262,7 @@ export interface paths {
     get: operations["getSummaryNoteByWriterandCourse"];
   };
   "/api/v1/courses/mycourse": {
-    /** 강좌 다건 조회 */
+    /** 내가 등록한 강좌 조회 */
     get: operations["getMyCourse"];
   };
   "/api/v1/comments/{postId}": {
@@ -2066,7 +2066,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["RsDataRoadmapDto"];
+          "application/json": components["schemas"]["RsDataListRoadmapDto"];
         };
       };
     };
@@ -2472,7 +2472,7 @@ export interface operations {
       };
     };
   };
-  /** 강좌 다건 조회 */
+  /** 내가 등록한 강좌 조회 */
   getMyCourse: {
     parameters: {
       query?: {
