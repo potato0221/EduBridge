@@ -96,6 +96,21 @@
     modalDropMessage.close();
   }
 
+  const visit = async () => {
+    if (!rq.member.visitedToday) {
+      const confirmAttendance = confirm('출석체크 하시겠습니까?');
+
+      if (confirmAttendance) {
+        const { data, error } = await rq.apiEndPoints().PUT('/api/v1/members/visit');
+        if (data) {
+          rq.msgInfo('출석체크 완료');
+        } else {
+          rq.msgWarning('이미 출석 되었습니다.');
+        }
+      }
+    }
+  };
+
   let point: components['schemas']['PointDto'] = $state();
 
   async function load() {
@@ -297,11 +312,6 @@
                   href="/course/{favoriteCourse.id}"
                   class="flex-none w-48 p-6 bg-white rounded-lg shadow"
                 >
-                  <h3
-                    class={`inline-flex px-2 text-xs font-semibold rounded-full py-1 mx-2 ${favoriteCourse.grade === '초급' ? 'bg-blue-100 text-blue-800' : favoriteCourse.grade === '중급' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}
-                  >
-                    {favoriteCourse.grade}
-                  </h3>
                   <h3 class="text-sm mt-1 font-medium">{favoriteCourse.title}</h3>
                 </a>
               {/each}
@@ -344,13 +354,16 @@
       <div class="ml-6">
         <input
           value="{import.meta.env.VITE_CORE_FRONT_BASE_URL}/export?uuid={member?.uuid}"
-          type="text"
+          type="hidden"
           id="inputUrl"
           placeholder="You can't touch this"
           class="input input-bordered w-full max-w-xs"
           disabled
         />
-        <button on:click={copyInputValue} class="btn btn-outline">Copy</button>
+        <button on:click={copyInputValue} class="btn btn-outline w-[250px] h-2 border-white shadow"
+          ><label class="text-xl">요약노트 for 포트폴리오</label><i class="fa-regular fa-paste"
+          ></i></button
+        >
       </div>
     </div>
   {:else}
@@ -360,7 +373,7 @@
 <div class="max-w-4xl mx-auto">
   <div class="flex gap-x-4 relative items-center">
     <button onclick={openModalCal} class="btn btn-sm text-xl m-4 bg-gray-100 border-white"
-      >출석 체크</button
+      >출석 달력</button
     >
     <dialog id="my_modal_3" class="modal" bind:this={calModal} on:click={handleOutsideClickCal}>
       <div class="modal-box">
@@ -372,6 +385,13 @@
         </div>
       </div>
     </dialog>
+  </div>
+</div>
+
+<div class="max-w-4xl mx-auto">
+  <div class="flex gap-x-4 relative items-center">
+    <button onclick={visit} class="btn btn-sm text-xl m-4 bg-gray-100 border-white">출석체크</button
+    >
   </div>
 </div>
 
@@ -421,18 +441,17 @@
           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
         <div class="flex flex-col bg-white shadow rounded-lg mt-4">
-          <div>탈퇴 전 안내사항을 숙지해주시기 바랍니다.</div>
+          <div>※ 탈퇴 전 안내사항을 숙지해주시기 바랍니다. ※</div>
           <p>
-            1. 왜 떠나시는 건지 말해주고 가세요. 화면에 대고 육성으로 뱉으시면 알아서
-            수집하겠습니다.<br />
-            2. 걱정하지 마세요. 내용만 수집할 뿐 목소리 정보는 수집하지 않습니다. 찾아가지도 않아요.<br
+            1. 탈퇴 시, 해당 계정으로 작성된 글, 댓글, 강좌, 로드맵에는 모두 '탈퇴한 회원'으로 표시됩니다.<br
             />
-            농담입니다.<br />
-            3. 해당 계정으로 작성된 글, 댓글, 강좌, 로드맵에는 모두 '탈퇴한 회원'으로 표시됩니다.<br
+            2. 해당 데이터가 남지 않기를 원하시는 경우, 탈퇴 전에 직접 삭제해주시기 바랍니다.<br
             />
-            4. 같은 소셜 계정으로 다시 회원가입을 하는 경우 만 하루가 지난 시점이어야 합니다.
+            3. 같은 소셜 계정으로 다시 회원가입 하실 수 있습니다.<br
+            />
+            4. 즐거운 마음으로 떠나시기를 기원합니다. 안녕히 가십시오.
           </p>
-          <div class="flex justify-between">
+          <div class="flex justify-between mb-1">
             <button onclick={closeDropMessage} class="btn mt-4">마이 페이지로<br /> 돌아가기</button
             >
             <button onclick={goodBye} class="btn mt-4">눈물을 머금고<br /> 이별하기</button>

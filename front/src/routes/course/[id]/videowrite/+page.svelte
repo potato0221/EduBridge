@@ -117,11 +117,9 @@
 {#await load()}
   <p>loading...</p>
 {:then}
-  <div
-    class="min-h-screen w-full flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
-  >
+  <div class="max-w-lg mx-auto w-full px-4 sm:px-6 lg:px-8 mt-2">
     <div class=" w-full space-y-8">
-      <div class="container mx-auto p-4 w-full">
+      <div class="container mx-auto w-full">
         <form
           class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
           on:submit|preventDefault={submitForm}
@@ -129,7 +127,7 @@
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="title"> 제 목 </label>
             <input
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="title"
               type="text"
               placeholder="Enter the title "
@@ -149,9 +147,10 @@
                     onclick={closeModalVidAdvice}>✕</button
                   >
                   <div>
-                    <div>형식에 맞추어 Youtube 영상의 url을 입력해주세요.</div>
-                    <div>https://www.youtube.com/watch?v=VIDEO-ID</div>
-                    <div>VIDEO-ID 뒤의 값(ex/ &list로 시작하는 부분 등)은 지우고 입력해주세요.</div>
+                    <div>※ Youtube 영상 URL 형식을 맞춰주세요!</div>
+                    <div>VIDEO-ID 위치에 Youtube 영상 id를 넣어주세요.</div>
+                    <div>Youtube 영상 id : URL v= 혹은 vi= 다음 값</div>
+                    <div>VIDEO-ID 뒤의 값(예: &list=VaLUe1234)은 지우고 입력해주세요.</div>
                   </div>
                 </div>
               </dialog>
@@ -180,16 +179,16 @@
                       onclick={closeModalThAdvice}>✕</button
                     >
                     <div>
-                      <div>제시된 형식에 맞춰 썸네일 이미지를 입력해주세요.</div>
+                      <div>※ 썸네일 등록 : URL 형식을 맞춰주세요 ※</div>
                       <br />
                       <div>VIDEO-ID 위치에 Youtube 영상 id를 넣어주세요.</div>
                       <br />
-                      <div>Youtube 영상 id : URL의 v= 혹은 vi= 다음 값</div>
+                      <div>Youtube 영상 id : URL v= 혹은 vi= 다음 값</div>
                     </div>
                   </div>
                 </dialog>
               </label><label
-                class="ml-4 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 bg-blue-400 text-white p-2 rounded"
+                class=" text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 bg-blue-400 text-white p-2 rounded"
                 for="course-imgUrl"
               >
                 https://img.youtube.com/vi/VIDEO-ID/0.jpg
@@ -215,6 +214,7 @@
                     class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                     onclick={closeModalKAdvice}>✕</button
                   >
+                  <div>※ 키워드는 해당 강의 요약노트 채점의 기준이 됩니다.</div>
                   <div>등록하는 강의 영상의 내용을 숙지하고 키워드를 작성해주세요.</div>
                   <div>키워드 개수는 3~5개를 권장합니다.</div>
                 </div>

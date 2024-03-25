@@ -193,7 +193,7 @@
               body={initialData.overView}
               height={'calc(60dvh - 64px)'}
             ></ToastUiEditor>
-            <div>
+            <div class="flex flex-col">
               <label
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 for="course-imgUrl mr-4"
@@ -208,16 +208,16 @@
                       onclick={closeModalThAdvice}>✕</button
                     >
                     <div>
-                      <div>제시된 형식에 맞춰 썸네일 이미지를 입력해주세요.</div>
+                      <div>※ 썸네일 등록 : URL 형식을 맞춰주세요 ※</div>
                       <br />
-                      <div>VIDEO-ID 위치에 첫번째 강의의 Youtube 영상 id를 넣어주세요.</div>
+                      <div>VIDEO-ID 위치에 첫번째로 등록할 강의의 Youtube 영상 id를 넣어주세요.</div>
                       <br />
-                      <div>Youtube 영상 id : URL의 v= 혹은 vi= 다음 값</div>
+                      <div>Youtube 영상 id : URL v= 혹은 vi= 다음 값</div>
                     </div>
                   </div>
                 </dialog>
               </label><label
-                class="ml-4 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 bg-blue-400 text-white p-2 rounded"
+                class="mt-1 w-[290px] text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 bg-blue-400 text-white p-2 rounded"
                 for="course-imgUrl"
               >
                 https://img.youtube.com/vi/VIDEO-ID/0.jpg
