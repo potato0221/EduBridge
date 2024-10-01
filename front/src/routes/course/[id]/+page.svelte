@@ -469,9 +469,7 @@
             {#each hashtags as hashtag}
               <div class="">
                 <div class="flex text-blue-600 text-sm text-center items-center ml-2">
-                  <a href="/course?tab=course&kwType=HASHTAGS&kw={hashtag}"
-                    >#{hashtag}</a
-                  >
+                  <a href="/course?tab=course&kwType=HASHTAGS&kw={hashtag}">#{hashtag}</a>
                 </div>
               </div>
             {/each}
@@ -480,7 +478,7 @@
             {#if !auth.enroll && !(rq.member.id == course.writer_id) && !rq.isAdmin()}
               <div class="flex">
                 <div class="mt-2">
-                  <p class="course-price mt-4">{course.price}원</p>
+                  <p class="course-price mt-4">{course.price}p</p>
                 </div>
                 <button
                   on:click={enrollCourse}
